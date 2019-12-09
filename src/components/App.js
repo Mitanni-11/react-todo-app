@@ -13,19 +13,6 @@ class App extends React.Component {
         };
     }
 
-
-
-    handleSubmit = text => {
-        const newTodo = {
-            id: currentId,
-            text: text,
-        }
-        const newTodos = [...this.state.todos, newTodo]
-        this.setState({todos: newTodos})
-        currentId++;
-    }
-
-
     render(){
         return(
             <div>
@@ -43,9 +30,9 @@ class App extends React.Component {
                 </select>
 
                 <ul>
-                    {this.state.todos.map(({id, text}) => (
+                    {this.state.todos.map(({id, text, completed}) => (
                         <li key={id}>
-                            <Todo text= {text} />
+                            <Todo id= {id} text= {text} completed={completed} onChange={this.handleCompleted} />
                         </li>
                         )
                     )}
@@ -55,6 +42,34 @@ class App extends React.Component {
             </div>
         );
     }
+
+    handleSubmit = text => {
+        const newTodo = {
+            id: currentId,
+            text: text,
+            completed: false,
+        }
+        const newTodos = [...this.state.todos, newTodo]
+        this.setState({todos: newTodos})
+        currentId++;
+    }
+
+
+
+    handleCompleted = (id, completed) => {
+        const newTodos = this.state.todos.map(todo => {
+            if(todo.id === id){
+                return {
+                    ...todo,
+                    completed,
+                }
+            }
+            return todo
+        })
+
+        this.setState({todos: newTodos})
+    }
+
 }
 
 export default App;
