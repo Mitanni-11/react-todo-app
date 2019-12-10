@@ -13,8 +13,8 @@ class CheckAll extends React.Component{
         );
     }
 
-    handleChange = () => {
-        const { onChange , allCompleted } = this.props
+    handleChange = e => {
+        const { onChange , allCompleted } = this.props;
         onChange(!allCompleted);
     }
 }

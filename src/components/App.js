@@ -2,6 +2,7 @@ import React from 'react';
 import Form from './Form';
 import Todo from './Todo';
 import Filter from'./Filter'
+import EditTodo from './EditTodo';
 import CheckAll from './CheckAll';
 
 let currentId = 0;
@@ -45,15 +46,24 @@ class App extends React.Component {
                 <Filter filter={filter} onChange={this.handleChangeFilter}/>
 
                 <ul>
-                    {filteredTodos.map(({id, text, completed}) => (
+                    {filteredTodos.map(({id, text, completed, editing}) => (
                         <li key={id}>
+                            {editing ? (
+                                <EditTodo
+                                    id={id}
+                                    text={text}
+                                    onCancel={this.handleChangeTodoAttribute}
+                                    onSubmit={this.handleUpdateTodoText}
+                                />
+                            ) : (
                             <Todo
                                 id= {id}
                                 text= {text}
                                 completed={completed}
-                                onChange={this.handleCompleted}
+                                onChange={this.handleChangeTodoAttribute}
                                 onDelete={this.handleDelete}
                             />
+                            )}
                         </li>
                         )
                     )}
@@ -69,6 +79,8 @@ class App extends React.Component {
             id: currentId,
             text: text,
             completed: false,
+            editing: false,
+
         }
         const newTodos = [...this.state.todos, newTodo]
         this.setState({todos: newTodos})
@@ -79,23 +91,26 @@ class App extends React.Component {
         const newTodos = this.state.todos.map(todo => {
             return {
                 ...todo,
-                completed,
-            }});
-        this.setState({todos: newTodos});
+                completed
+            };
+        });
+
+        this.setState({ todos: newTodos });
     };
 
-    handleCompleted = (id, completed) => {
+    handleChangeTodoAttribute = (id, key, value) => {
         const newTodos = this.state.todos.map(todo => {
-            if(todo.id === id){
+            if (todo.id === id) {
                 return {
                     ...todo,
-                    completed,
-                }
+                    [key]: value
+                };
             }
-            return todo
-        })
 
-        this.setState({todos: newTodos})
+            return todo;
+        });
+
+        this.setState({ todos: newTodos });
     };
 
     handleChangeFilter = filter => {
@@ -105,10 +120,24 @@ class App extends React.Component {
     handleDelete = id =>{
         const newTodos = this.state.todos.filter(todo => todo.id !== id )
         this.setState({todos: newTodos})
-    }
+    };
 
     handleClickDelete = () => {
         const newTodos = this.state.todos.filter(({completed}) => !completed)
+        this.setState({todos: newTodos})
+    };
+
+    handleUpdateTodoText = (id, text) => {
+        const newTodos = this.state.todos.map(todo => {
+            if(todo.id === id){
+                return{
+                    ...todo,
+                    text,
+                    editing: false
+                };
+            }
+            return todo
+        });
         this.setState({todos: newTodos})
     }
 
