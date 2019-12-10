@@ -40,7 +40,7 @@ class App extends React.Component {
                     )}
                 </ul>
 
-                <button>完了済みを全て削除</button>
+                <button onClick={this.handleClickDelete}>完了済みを全て削除</button>
             </div>
         );
     };
@@ -78,6 +78,11 @@ class App extends React.Component {
 
         this.setState({todos: newTodos})
     };
+
+    handleClickDelete = () => {
+        const newTodos = this.state.todos.filter(({completed}) => !completed)
+        this.setState({todos: newTodos})
+    }
 
 
 }
